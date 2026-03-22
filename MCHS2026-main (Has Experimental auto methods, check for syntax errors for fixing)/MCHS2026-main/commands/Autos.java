@@ -1,0 +1,89 @@
+/*
+* This file is contains the autonomous commands.
+* There should be multiple commands here for different autonomous routines.
+*/
+
+package frc.robot.commands;
+
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
+import frc.robot.subsystems.DriveTrainSS;
+import frc.robot.subsystems.ShooterSS;
+import frc.robot.subsystems.LoaderSS;
+// Import other subsystems as needed
+
+public final class Autos {
+  public static Command simpleAuto1(DriveTrainSS driveTrainSS) {
+    return Commands.sequence(
+        Commands.run(() -> driveTrainSS.setMotorSpeeds(0.5, 0.5), driveTrainSS).withTimeout(2),
+        Commands.runOnce(() -> driveTrainSS.setMotorSpeeds(0.0, 0.0), driveTrainSS)
+    );
+  }
+  // Move forward for 2 seconds
+
+  public static Command simpleAuto2(DriveTrainSS driveTrainSS) {
+    return Commands.sequence(
+        Commands.run(() -> driveTrainSS.setMotorSpeeds(0.5, 0.5), driveTrainSS).withTimeout(1),
+        Commands.runOnce(() -> driveTrainSS.setMotorSpeeds(0.0, 0.0), driveTrainSS),
+        Commands.run(() -> driveTrainSS.setMotorSpeeds(-0.5, 0.5), driveTrainSS).withTimeout(1),
+        Commands.runOnce(() -> driveTrainSS.setMotorSpeeds(0.0, 0.0), driveTrainSS)
+    );
+  }
+  // Move forward for 1 second, then turn right for 1 second
+
+  public static Command simpleAuto3(DriveTrainSS driveTrainSS) {
+    return Commands.sequence(
+        Commands.run(() -> driveTrainSS.setMotorSpeeds(0.5, 0.5), driveTrainSS).withTimeout(1),
+        Commands.runOnce(() -> driveTrainSS.setMotorSpeeds(0.0, 0.0), driveTrainSS),
+        Commands.run(() -> driveTrainSS.setMotorSpeeds(0.5, -0.5), driveTrainSS).withTimeout(1),
+        Commands.runOnce(() -> driveTrainSS.setMotorSpeeds(0.0, 0.0), driveTrainSS)
+    );
+  }
+  // Move forward for 1 second, then turn left for 1 second
+
+  public static Command shootAuto(ShooterSS shooterSS, LoaderSS loaderSS) {
+    // Run the shooter and loader at full speed for 10 seconds, then stop
+    return Commands.sequence(
+        Commands.run(() -> {
+          System.out.println("[Auto] shootAuto: starting shooter and loader");
+          shooterSS.setShooterSpeed(1.0);
+          loaderSS.setLoaderSpeed(1.0);
+        }, shooterSS, loaderSS).withTimeout(10),
+        Commands.runOnce(() -> {
+          System.out.println("[Auto] shootAuto: stopping shooter and loader");
+          shooterSS.setShooterSpeed(0.0);
+          loaderSS.setLoaderSpeed(0.0);
+        }, shooterSS, loaderSS)
+    );
+  }
+
+
+  public static Command complexAuto(DriveTrainSS driveTrainSS, Shooter shooterSS, LoaderSS loaderSS)
+  {
+    return Commands.sequence(
+        Commands.run(() -> {
+          System.out.println("[Auto] shootAndDriveAuto: starting shooter, loader and driveTrain");
+          driveTrainSS.setMotorSpeeds(0.5, 0.5);
+          driveTrainSS.fasterTurning();
+          loaderSS.setLoaderSpeed(1.0);
+          shooterSS.setShooterSpeed(1.0);
+        }, shooterSS, loaderSS).withTimeout(10), Commands.runOnce(() -> {
+          System.out.println("Auto shootAndDriveAuto: stopping shooter, loader and drivetrain");
+          shooterSS.setShooterSpeed(0.0);
+          loaderSS.setLoaderSpeed(0.0);
+          driveTrainSS.setMotorSpeeds(0.0, 0.0);
+        }, shooterSS, loaderSS, driveTrainSS)
+        );
+  }
+
+  public static Command groupedAutos (DriveTrainSS driveTrainSS, Shooter shooterSS, Loader loaderSS)
+  {
+    return Commands.sequence(Commands.run(() -> {
+      System.out.println("groupedAutos: starting shooter, drive and loader");
+      complexAuto(driveTrainSS, shooterSS, loaderSS);
+    }).withTineout(12), Commands.runOnce(() -> {
+      System.out.println("More autos");
+      simpleAuto3(driveTrainSS);
+    }));
+  }
+}
