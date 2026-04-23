@@ -14,10 +14,12 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 
 
 public class ShooterSS extends SubsystemBase {
-  private final SparkMax shooter = new SparkMax(6, MotorType.kBrushless); 
+  private final SparkMax shooter = new SparkMax(6, MotorType.kBrushless);
+  private double speed; 
 
   public void setShooterSpeed(double speed) {
     shooter.set(speed);
+    this.speed = speed;
   }
   public Command shootNormal() {
     // Start shooter while held, stop when released
@@ -27,6 +29,32 @@ public class ShooterSS extends SubsystemBase {
 
 public Command reverseShooter() {
   return startEnd(() -> setShooterSpeed(-0.5), () -> setShooterSpeed(0));
+}
+
+public Command addSpeed()
+{
+  if(speed + 0.1 > 1)
+  {
+    System.out.println("Out of bounds speed");
+    return null;
+  }
+  else
+  {
+    return run(() -> setShooterSpeed(speed + 0.1));
+  }
+}
+
+public Command subtractSpeed()
+{
+  if(speed - 0.1 < -1)
+  {
+    System.out.println("Out of bounds speed");
+    return null;
+  }
+  else
+  {
+    return run(() -> setShooterSpeed(speed - 0.1));
+  }
 }
 
 }

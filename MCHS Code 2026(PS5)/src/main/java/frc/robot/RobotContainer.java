@@ -49,7 +49,7 @@ public class RobotContainer {
 
   }
   // Constructor to set up button bindings
-  // Xbox
+  // PS5
   private void configureBindings() {
     
     driveTrainSS.setDefaultCommand(new JoystickDriveC(driveTrainSS));
@@ -66,7 +66,11 @@ public class RobotContainer {
 
     controller.R1().toggleOnTrue(driveTrainSS.turn180());
 
-    controller.pov(90).toggleOnTrue(agi);
+    controller.square().toggleOnTrue(agi);
+    controller.pov(90).whileTrue(driveTrainSS.addDriveSpeed());
+    controller.pov(270).whileTrue(driveTrainSS.subtractDriveSpeed());
+    controller.pov(0).whileTrue(shooterSS.addSpeed());
+    controller.pov(180).whileTrue(shooterSS.subtractSpeed());
 
     //                                                  END OF PS5 BINDINGS
     // -----------------------------------------------------------------------------------------------------------------------

@@ -21,6 +21,9 @@ public class DriveTrainSS extends SubsystemBase {
   private final SparkMax rightSide = new SparkMax(3, MotorType.kBrushed);
   private final SparkMax rightSide2 = new SparkMax(4, MotorType.kBrushed);
 
+  private double leftSpeed;
+  private double rightSpeed;
+
   
   // Instantiate motor controllers
 
@@ -29,6 +32,8 @@ public class DriveTrainSS extends SubsystemBase {
     leftSide2.set(-leftSpeed * 1.0);
     rightSide.set(rightSpeed * 1.0);
     rightSide2.set(rightSpeed * 1.0);
+    this.leftSpeed = leftSpeed;
+    this.rightSpeed = rightSpeed;
   }
   // Method to set motor speeds
 
@@ -68,5 +73,31 @@ public class DriveTrainSS extends SubsystemBase {
     }
 
     setMotorSpeeds(leftSpeed, rightSpeed);
+  }
+
+  public Command addDriveSpeed()
+  {
+    if(leftSpeed + 0.1 > 1 || rightSpeed + 0.1 > 1)
+    {
+      System.out.println("Out of bounds");
+      return null;
+    }
+    else
+    {
+      return run(() -> setMotorSpeeds(leftSpeed + 0.1, rightSpeed + 0.1));
+    }
+  }
+
+  public Command subtractDriveSpeed()
+  {
+    if(leftSpeed - 0.1 < -1 || rightSpeed - 0.1 < 1)
+    {
+      System.out.println("Out of bounds");
+      return null;
+    }
+    else
+    {
+      return run(() -> setMotorSpeeds(leftSpeed - 0.1, rightSpeed - 0.1));
+    }
   }
 }
