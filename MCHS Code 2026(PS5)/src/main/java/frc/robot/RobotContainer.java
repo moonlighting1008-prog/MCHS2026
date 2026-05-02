@@ -67,10 +67,15 @@ public class RobotContainer {
     controller.R1().toggleOnTrue(driveTrainSS.turn180());
 
     controller.square().toggleOnTrue(agi);
+    
     controller.pov(90).whileTrue(driveTrainSS.addDriveSpeed());
+    //Adds speed when d-pad is moved right
     controller.pov(270).whileTrue(driveTrainSS.subtractDriveSpeed());
+    //Subtracts speed when d-pad is moved left
     controller.pov(0).whileTrue(shooterSS.addSpeed());
+    //Adds speed to shooter when d-pad is moved up
     controller.pov(180).whileTrue(shooterSS.subtractSpeed());
+    //Subtracts speed to shooter when d-pad is moved down
 
     //                                                  END OF PS5 BINDINGS
     // -----------------------------------------------------------------------------------------------------------------------
